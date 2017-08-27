@@ -28,6 +28,13 @@ cpr_data <-
 
 cpr_data %>% count(us_public_co_note, us_public_co)
 
+# Push data to PostgreSQL ----
+library(RPostgreSQL)
 
-cpr_data %>% mutate(us_public_co_note=us_public_co,us_public_co=fix_boolean(us_public_co)) %>% count(us_public_co_note,us_public_co)
+pg <- dbConnect(PostgreSQL())
 
+rs <- dbWriteTable(pg, c("cpr", "cpr_data"), cpr_data,
+                   overwrite = TRUE, row.names = FALSE)
+rs <- dbGetQuery(pg, "ALTER TABLE cpr.cpr_data OWNER TO cpr")
+rs <- dbGetQuery(pg, "GRANT SELECT ON cpr.cpr_data TO cpr_access")
+dbDisconnect(pg)
