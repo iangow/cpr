@@ -31,7 +31,7 @@ cpr_data %>% count(us_public_co_note, us_public_co)
 # Push data to PostgreSQL ----
 library(RPostgreSQL)
 
-pg <- dbConnect(PostgreSQL())
+pg <- dbConnect(PostgreSQL(), host="10.101.13.99", password="temp_20170710")
 
 rs <- dbWriteTable(pg, c("cpr", "cpr_data"), cpr_data,
                    overwrite = TRUE, row.names = FALSE)
