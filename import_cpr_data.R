@@ -20,8 +20,8 @@ fix_boolean <- function(var){
 
 cpr_data %>% mutate(us_public_co_note=us_public_co,us_public_co=fix_boolean(us_public_co)) %>% count(us_public_co_note,us_public_co)
 
-
 Sys.setenv(PGHOST="10.101.13.99",PGDATABASE="crsp")
+
 library(RPostgreSQL)
 
 library(dplyr,warn.conflicts = FALSE)
