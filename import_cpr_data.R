@@ -39,3 +39,27 @@ rs <- dbGetQuery(pg, "ALTER TABLE cpr.cpr_data OWNER TO cpr")
 rs <- dbGetQuery(pg, "GRANT SELECT ON cpr.cpr_data TO cpr_access")
 dbDisconnect(pg)
 
+library(rvest)
+library(lubridate)
+
+library(dplyr,warn.conflicts = FALSE)
+
+docket_link <- "http://lib.law.virginia.edu/Garrett/corporate-prosecution-registry/dockets/1stUnionTransfer.htm"
+
+fix_names <- function(df){
+     names(df) <- c("date_filed" ,"item_number","docket_text")
+     df
+}
+
+docket_df <-
+    read_html(docket_link) %>%
+    html_nodes("table") %>%
+    .[[5]] %>%
+    html_table() %>%
+    fix_names() %>%
+    mutate(date_filed=mdy(date_filed)) %>%
+    mutate(docket_text =gsub("\r\n\\s*","",docket_text))
+
+docket_df
+
+docket_text
