@@ -48,16 +48,19 @@ rs <- dbGetQuery(pg, "GRANT SELECT ON cpr.cpr_data TO cpr_access")
 dbDisconnect(pg)
 
 
+# Additional information
 library(xml2)
 library(rvest)
 library(lubridate)
 library(dplyr,warn.conflicts = FALSE)
 
-docket_link <- "http://lib.law.virginia.edu/Garrett/corporate-prosecution-registry/dockets/1stUnionTransfer.htm"
+docket_link <- file.path("http://lib.law.virginia.edu",
+                         "Garrett/corporate-prosecution-registry/",
+                         "dockets/1stUnionTransfer.htm")
 
 fix_names <- function(df){
-     names(df) <- c("date_filed" ,"item_number","docket_text")
-     df
+    names(df) <- c("date_filed" ,"item_number", "docket_text")
+    df
 }
 
 docket_df <-
@@ -67,8 +70,17 @@ docket_df <-
     html_table() %>%
     fix_names() %>%
     mutate(date_filed=mdy(date_filed)) %>%
-    mutate(docket_text =gsub("\r\n\\s*","",docket_text))
+    mutate(docket_text =gsub("\r\n\\s*", "", docket_text))
 
-docket_df
+# Push data to PostgreSQL ----
+library(DBI)
+library(RPostgreSQL)
 
-docket_text
+pg <- dbConnect(PostgreSQL())
+
+rs <- dbWriteTable(pg, c("cpr", "dockets"), docket_df,
+                   overwrite = TRUE, row.names = FALSE)
+rs <- dbGetQuery(pg, "ALTER TABLE cpr.dockets OWNER TO cpr")
+rs <- dbGetQuery(pg, "GRANT SELECT ON cpr.dockets TO cpr_access")
+dbDisconnect(pg)
+
