@@ -24,7 +24,9 @@ cpr_data <-
            us_public_co_note = us_public_co,
            us_public_co = fix_boolean(us_public_co),
            leniency_reasons_note = leniency_reasons,
-           leniency_reasons = fix_boolean(leniency_reasons))
+           leniency_reasons = fix_boolean(leniency_reasons),
+           swiss_bank_program = fix_boolean(swiss_bank_program),
+           financial_institution = fix_boolean(financial_institution))
 
 cpr_data %>% count(us_public_co_note, us_public_co)
 
