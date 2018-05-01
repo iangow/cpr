@@ -2,8 +2,6 @@ library(readr)
 library(dplyr, warn.conflicts = FALSE)
 library(stringr)
 
-Sys.setenv(PGDATABASE="crsp")
-
 # Some helper functions ----
 fix_boolean <- function(var) {
     if_else(str_detect(var, "^(Yes|Y;)"), TRUE,
