@@ -4,8 +4,8 @@ library(stringr)
 
 # Some helper functions ----
 fix_boolean <- function(var) {
-    if_else(str_detect(var, "^(Yes|Y;)"), TRUE,
-            if_else(str_detect(var,"^No"), FALSE, NA))
+    if_else(str_detect(var, "^(Yes|Y)"), TRUE,
+            if_else(str_detect(var,"^No|N"), FALSE, NA))
 }
 
 fix_names <- function(df) {
